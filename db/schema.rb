@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_10_18_235829) do
+ActiveRecord::Schema[7.0].define(version: 2023_11_13_192355) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "hstore"
   enable_extension "pgcrypto"
@@ -54,6 +54,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_18_235829) do
     t.datetime "soft_deleted_at"
     t.string "soft_deleted_rubygem_name"
     t.datetime "expires_at", precision: nil
+    t.datetime "mfa_expires_at", precision: nil
     t.index ["hashed_key"], name: "index_api_keys_on_hashed_key", unique: true
     t.index ["user_id"], name: "index_api_keys_on_user_id"
   end

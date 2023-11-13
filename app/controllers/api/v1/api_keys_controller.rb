@@ -22,6 +22,7 @@ class Api::V1::ApiKeysController < Api::BaseController
         key = generate_unique_rubygems_key
         build_params = { user: user, hashed_key: hashed_key(key), **api_key_create_params }
         api_key = ApiKey.new(build_params)
+        api_key.mfa_expires_at = 5.minutes.from_now
 
         save_and_respond(api_key, key)
       end

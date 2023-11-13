@@ -47,7 +47,11 @@ class ApiKey < ApplicationRecord
   def mfa_authorized?(otp)
     return true unless mfa_enabled?
     return true if oidc_id_token.present?
-    user.api_mfa_verified?(otp)
+    return true if mfa_within_cooldown?
+    if (success = user.api_mfa_verified?(otp))
+      update(mfa_expires_at: 5.minutes.from_now)
+    end
+    success
   end
 
   def mfa_enabled?
@@ -114,5 +118,11 @@ class ApiKey < ApplicationRecord
   def not_expired?
     return if changed == %w[expires_at]
     errors.add :base, "An expired API key cannot be used. Please create a new one." if expired?
+  end
+
+  def mfa_within_cooldown?
+    return false if mfa_expires_at.nil?
+
+    mfa_expires_at > Time.current
   end
 end
